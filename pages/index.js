@@ -65,7 +65,6 @@ export default function Home() {
   function handleUpdatePost(e) {
     e.preventDefault();
     for (let i = 0; i < allEvents.length; i++) {
-      console.log(allEvents[i].date)
       if (allEvents[i].title == oldTitle && allEvents[i].date == oldDate) {
         allEvents.splice(i, 1);
         break;
@@ -81,6 +80,16 @@ export default function Home() {
     handleEditFormShow();
     oldTitle = newPost.title;
     oldDate = newPost.date;
+  }
+
+  function handleDelete() {
+    for (let i = 0; i < allEvents.length; i++) {
+      if (allEvents[i].title == oldTitle && allEvents[i].date == oldDate) {
+        allEvents.splice(i, 1);
+        break;
+      }
+    }
+    handleEditFormClose();
   }
 
   const onDoubleClickEvent = useCallback((e) => {
@@ -134,6 +143,7 @@ export default function Home() {
         newPost={newPost}
         setNewPost={setNewPost}
         handleSubmit={handleUpdatePost}
+        handleDelete={handleDelete}
       />
       <Popup
         show={showViewForm}

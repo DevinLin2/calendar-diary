@@ -55,9 +55,16 @@ export default function Popup({
                             </Form.Group>
                         </Row>
                         <Row>
-                            <Col xs={{ span: 3, offset: 9 }}>
-                                <Button className="float-end" variant="success" onClick={handleSubmit}>Enter</Button>
+                            {isEditModal && <Col xs={6}>
+                                <Button variant='danger' onClick={handleDelete}>Delete Post</Button>
                             </Col>
+                            }
+                            {isEditModal && <Col xs={6}>
+                                <Button className="float-end" variant="success" onClick={handleSubmit}>Enter</Button>
+                            </Col>}
+                            {isDiaryModal && <Col xs={{span: 3, offset: 9}}>
+                                <Button className="float-end" variant="success" onClick={handleSubmit}>Enter</Button>
+                            </Col>}
                         </Row>
                     </Container>
                 </Form>
