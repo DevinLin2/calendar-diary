@@ -82,7 +82,7 @@ export default function Home({ allPosts }) {
   let sendData = async (e) => {
     // setLoading(true);
     e.preventDefault();
-    let res = await fetch("http://localhost:3000/api/posts", {
+    let res = await fetch("/api/posts", {
       method: "POST",
       body: JSON.stringify(newPost),
     });
@@ -91,7 +91,7 @@ export default function Home({ allPosts }) {
 
   let deleteData = async (e) => {
     e.preventDefault();
-    let res = await fetch("http://localhost:3000/api/posts", {
+    let res = await fetch("/api/posts", {
       method: "DELETE",
       body: JSON.stringify({
         title: oldTitle,
@@ -103,7 +103,7 @@ export default function Home({ allPosts }) {
 
   let updateData = async (e) => {
     e.preventDefault();
-    let res = await fetch("http://localhost:3000/api/posts", {
+    let res = await fetch("/api/posts", {
       method: "PUT",
       body: JSON.stringify({
         title: oldTitle,
