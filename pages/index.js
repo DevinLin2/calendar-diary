@@ -30,7 +30,21 @@ const events = [];
 let oldTitle;
 let oldDate;
 
-export default function Home() {
+export async function getServerSideProps(context) {
+  let res = await fetch("http://localhost:3000/api/posts", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  let allPosts = await res.json();
+
+  return {
+    props: { allPosts },
+  };
+}
+
+export default function Home({ allPosts }) {
   const [allEvents, setAllEvents] = useState(events);
   const [newPost, setNewPost] = useState({ title: "", date: "", entry: "" });
   const [showDiaryForm, setShowDiaryForm] = useState(false);
@@ -41,6 +55,16 @@ export default function Home() {
   const handleDiaryFormShow = () => setShowDiaryForm(true);
   const handleEditFormShow = () => setShowEditForm(true);
   const handleViewFormShow = () => setShowViewForm(true);
+
+  useEffect(() => {
+    const importedData = [];
+    for (let i = 0; i < allPosts.data.length; i++) {
+      console.log(allPosts.data[i]);
+      const post = {title: allPosts.data[i].title, date: moment(allPosts.data[i].date).toDate(), entry: allPosts.data[i].entry};
+      importedData.push(post);
+    }
+    setAllEvents(importedData);
+  }, []);
 
   const handleDiaryFormClose = () => {
     setNewPost({ title: "", date: "", entry: "" });
@@ -55,10 +79,46 @@ export default function Home() {
     setShowViewForm(false);
   }
 
+  let sendData = async (e) => {
+    // setLoading(true);
+    e.preventDefault();
+    let res = await fetch("http://localhost:3000/api/posts", {
+      method: "POST",
+      body: JSON.stringify(newPost),
+    });
+    res = await res.json();
+  }
+
+  let deleteData = async (e) => {
+    e.preventDefault();
+    let res = await fetch("http://localhost:3000/api/posts", {
+      method: "DELETE",
+      body: JSON.stringify({
+        title: oldTitle,
+        date: oldDate,
+      }),
+    });
+    res = await res.json();
+  }
+
+  let updateData = async (e) => {
+    e.preventDefault();
+    let res = await fetch("http://localhost:3000/api/posts", {
+      method: "PUT",
+      body: JSON.stringify({
+        title: oldTitle,
+        date: oldDate,
+        newPost: newPost,
+      }),
+    });
+    res = await res.json();
+  }
+
   function handleNewPost(e) {
     e.preventDefault();
     newPost.date = moment(newPost.date).toDate();
     setAllEvents([...allEvents, newPost]);
+    sendData(e);
     handleDiaryFormClose();
   }
 
@@ -71,6 +131,7 @@ export default function Home() {
       }
     }
     newPost.date = moment(newPost.date).toDate();
+    updateData(e);
     setAllEvents([...allEvents, newPost]);
     handleEditFormClose();
   }
@@ -82,13 +143,14 @@ export default function Home() {
     oldDate = newPost.date;
   }
 
-  function handleDelete() {
+  function handleDelete(e) {
     for (let i = 0; i < allEvents.length; i++) {
       if (allEvents[i].title == oldTitle && allEvents[i].date == oldDate) {
         allEvents.splice(i, 1);
         break;
       }
     }
+    deleteData(e);
     handleEditFormClose();
   }
 
