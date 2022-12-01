@@ -31,7 +31,7 @@ let oldTitle;
 let oldDate;
 
 export async function getServerSideProps(context) {
-  let res = await fetch("/api/posts", {
+  let res = await fetch("https://calendar-diary.vercel.app/api/posts", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
